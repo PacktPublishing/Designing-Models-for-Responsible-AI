@@ -6,7 +6,7 @@ Chapter 1
 •	pip install adversarial-robustness-toolbox
 •	pip install git+https://github.com/Koukyosyumei/AIJack
 
-Reference :https://github.com/Koukyosyumei/AIJack/tree/main/src/aijack
+Reference :https://github.com/Koukyosyumei/AIJack/tree/main/src/aijack,
 https://github.com/Trusted-AI/adversarial-robustness-toolbox
 
 Chapter 2

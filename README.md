@@ -2,9 +2,6 @@
 Designing Models for Responsible AI
 
 Chapter 1
-Markup : ```javascript
-         ```
-
 •	keras-2.7.0, Tensorflow-2.7.0
 •	pip install adversarial-robustness-toolbox
 •	pip install git+https://github.com/Koukyosyumei/AIJack

@@ -24,7 +24,7 @@ Chapter 2
 •	pip install mia
 •	pip install foolbox
 
-Reference :
+References :
 https://github.com/OpenMined/PySyft
 https://github.com/ibarrond/Pyfhel
 https://github.com/pralab/secml

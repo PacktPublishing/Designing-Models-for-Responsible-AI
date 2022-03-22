@@ -5,7 +5,9 @@
 
 - The first step is to clone the hashicorp/vault-guides repository from GitHub
 
+	```sh
 	git clone https://github.com/hashicorp/vault-guides.git
+	```
 
 - The next step is to navigate inside vault-guides/identity/vault-agent-k8s-demo directory.
 

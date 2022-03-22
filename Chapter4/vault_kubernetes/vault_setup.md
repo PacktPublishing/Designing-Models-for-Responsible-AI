@@ -1,117 +1,122 @@
-﻿The first step is to clone the hashicorp/vault-guides repository from GitHub
+﻿# Vault setup on Kubernetes Cluster
 
-git clone https://github.com/hashicorp/vault-guides.git
+## _Vault on Kubernetes Deployment Guide_
 
-The next step is to navigate inside vault-guides/identity/vault-agent-k8s-demo directory.
 
-cd vault-guides/identity/vault-agent-k8s-demo
+- The first step is to clone the hashicorp/vault-guides repository from GitHub
 
-Next, we start a Vault dev server which listens for requests locally at 0.0.0.0:8200 with root as the root token ID.
+	git clone https://github.com/hashicorp/vault-guides.git
 
-vault server -dev -dev-root-token-id root -dev-listen-address 0.0.0.0:8200
+- The next step is to navigate inside vault-guides/identity/vault-agent-k8s-demo directory.
 
-To provide an URL access, export an environment variable for the vault CLI to address the Vault server
+	cd vault-guides/identity/vault-agent-k8s-demo
 
-export VAULT\_ADDR=http://0.0.0.0:8200
+- Next, we start a Vault dev server which listens for requests locally at 0.0.0.0:8200 with root as the root token ID.
 
-To create a service account we can start a Kubernetes cluster running in Minikube
+	vault server -dev -dev-root-token-id root -dev-listen-address 0.0.0.0:8200
 
-minikube start --driver=docker
+- To provide an URL access, export an environment variable for the vault CLI to address the Vault server
 
-Check the status of the minikube environment if its fully available
+	export VAULT\_ADDR=http://0.0.0.0:8200
 
-minikube status
+- To create a service account we can start a Kubernetes cluster running in Minikube
 
-The output from the status will be displayed as:
+	minikube start --driver=docker
 
-host: Running
+- Check the status of the minikube environment if its fully available
 
-kubelet: Running
+	minikube status
 
-apiserver: Running
+- The output from the status will be displayed as:
 
-kubeconfig: Configured
+	host: Running
 
-After verifying the status, we examine the contents of vault-auth-service-account.yaml for service account creation
+	kubelet: Running
 
-Next we create a Kubernetes service account named vault-auth.
+	apiserver: Running
 
-kubectl create serviceaccount vault-auth
+	kubeconfig: Configured
 
-Update the vault-auth service account
+- After verifying the status, we examine the contents of vault-auth-service-account.yaml for service account creation
 
-kubectl apply --filename vault-auth-service-account.yaml
+- Next we create a Kubernetes service account named vault-auth.
 
-Now to configure Kubernetes auth method, we create a read-only policy, myapp-kv-ro in Vault
+	kubectl create serviceaccount vault-auth
 
-vault policy write myapp-kv-ro - <<EOF
+- Update the vault-auth service account
 
-path "secret/data/myapp/\*" {
+	kubectl apply --filename vault-auth-service-account.yaml
 
-capabilities = ["read", "list"]
+- Now to configure Kubernetes auth method, we create a read-only policy, myapp-kv-ro in Vault
 
-}
+	vault policy write myapp-kv-ro - <<EOF
 
-EOF
+	path "secret/data/myapp/\*" {
 
-In the following step, we create some test data at the secret/myapp path
+	capabilities = ["read", "list"]
 
-vault kv put secret/myapp/config \
+	}
 
-username='appuser' \
+	EOF
 
-password='suP3rsec(et!' \
+- In the following step, we create some test data at the secret/myapp path
 
-ttl='30s'
+	vault kv put secret/myapp/config \
 
-Now let us set the environment variables to point to the running Minikube environment. Here we set the VAULT\_SA\_NAME environment variable value to the vault-auth service account.
+	username='appuser' \
 
-export VAULT\_SA\_NAME=$(kubectl get sa vault-auth \
+	password='suP3rsec(et!' \
 
---output jsonpath="{.secrets[\*]['name']}")
+	ttl='30s'
 
-Here, we also set the SA\_JWT\_TOKEN environment variable value to the service account JWT used to access the TokenReview API.
+- Now let us set the environment variables to point to the running Minikube environment. Here we set the VAULT\_SA\_NAME environment variable value to the vault-auth service account.
 
-export SA\_JWT\_TOKEN=$(kubectl get secret $VAULT\_SA\_NAME \
+	export VAULT\_SA\_NAME=$(kubectl get sa vault-auth \
 
---output 'go-template={{ .data.token }}' | base64 --decode)
+	--output jsonpath="{.secrets[\*]['name']}")
 
-Next, we set the SA\_CA\_CRT environment variable value to the PEM encoded CA cert used to talk to Kubernetes API.
+- Here, we also set the SA\_JWT\_TOKEN environment variable value to the service account JWT used to access the TokenReview API.
 
-export SA\_CA\_CRT=$(kubectl config view --raw --minify --flatten \
+	export SA\_JWT\_TOKEN=$(kubectl get secret $VAULT\_SA\_NAME \
 
---output 'jsonpath={.clusters[].cluster.certificate-authority-data}' | base64 --decode)
+	--output 'go-template={{ .data.token }}' | base64 --decode)
 
-Now the minikube IP address should be available, hence we point the K8S\_HOST environment variable value to this.
+- Next, we set the SA\_CA\_CRT environment variable value to the PEM encoded CA cert used to talk to Kubernetes API.
 
-export K8S\_HOST=$(kubectl config view --raw --minify --flatten \
+	export SA\_CA\_CRT=$(kubectl config view --raw --minify --flatten \
 
---output 'jsonpath={.clusters[].cluster.server}')
+	--output 'jsonpath={.clusters[].cluster.certificate-authority-data}' | base64 --decode)
 
-Finally, we need to enable and configure the Kubernetes auth method at the default path ("auth/kubernetes").
+- Now the minikube IP address should be available, hence we point the K8S\_HOST environment variable value to this.
 
-vault auth enable kubernetes
+	export K8S\_HOST=$(kubectl config view --raw --minify --flatten \
 
-Further, we also let Vault how to communicate with the Kubernetes (Minikube) cluster.
+	--output 'jsonpath={.clusters[].cluster.server}')
 
-vault write auth/kubernetes/config \
+- Finally, we need to enable and configure the Kubernetes auth method at the default path ("auth/kubernetes").
 
-token\_reviewer\_jwt="$SA\_JWT\_TOKEN" \
+	vault auth enable kubernetes
 
-kubernetes\_host="$K8S\_HOST" \
+- Further, we also let Vault how to communicate with the Kubernetes (Minikube) cluster.
 
-kubernetes\_ca\_cert="$SA\_CA\_CRT" \
+	vault write auth/kubernetes/config \
 
-issuer="https://kubernetes.default.svc.cluster.local"
+	token\_reviewer\_jwt="$SA\_JWT\_TOKEN" \
 
-Having configured all at last we need to create a role named, example, that maps the Kubernetes Service Account to Vault policies and default token TTL.
+	kubernetes\_host="$K8S\_HOST" \
 
-vault write auth/kubernetes/role/example \
+	kubernetes\_ca\_cert="$SA\_CA\_CRT" \
 
-bound\_service\_account\_names=vault-auth \
+	issuer="https://kubernetes.default.svc.cluster.local"
 
-bound\_service\_account\_namespaces=default \
+- Having configured all at last we need to create a role named, example, that maps the Kubernetes Service Account to Vault policies and default token TTL.
 
-policies=myapp-kv-ro \
+	vault write auth/kubernetes/role/example \
 
-ttl=24h
+	bound\_service\_account\_names=vault-auth \
+
+	bound\_service\_account\_namespaces=default \
+
+	policies=myapp-kv-ro \
+
+	ttl=24h

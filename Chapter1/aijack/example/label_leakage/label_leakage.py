@@ -1,3 +1,17 @@
+'''
+Two-party split learning is used conveniently to learn models across feature-partitioned data.
+In this example we see how it is possible for one party to steal the private label information
+from the other party during split training. We first design a realistic threat model and propose a privacy loss metric to quantify
+label leakage in split learning. We initiate SplitNNNormAttack (norm-based label leakage attack) after
+integrating the models from respective clients and then using split learning to allow them to steal information from each other.
+
+We evaluate the label AUC score from the Train and Test model.
+To combat these attacks, there are several random perturbation techniques, including 𝙼𝚊𝚛𝚟𝚎𝚕𝚕,
+an approach that strategically finds the structure of the noise perturbation by minimizing the amount of label leakage
+(measured through our quantification metric) of a worst-case adversary.
+
+'''
+
 import numpy as np
 import pandas as pd
 import torch
@@ -153,9 +167,9 @@ def main():
 
     nall = SplitNNNormAttack(splitnn)
     train_leak_auc = nall.attack(train_loader, criterion, device)
-    print("Leau AUC is ", train_leak_auc)
+    print("Train Leau AUC is ", train_leak_auc)
     test_leak_auc = nall.attack(test_loader, criterion, device)
-    print("Leau AUC is ", test_leak_auc)
+    print("Test Leau AUC is ", test_leak_auc)
 
 
 if __name__ == "__main__":

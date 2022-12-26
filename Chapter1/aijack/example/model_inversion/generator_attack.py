@@ -1,3 +1,7 @@
+'''
+This model inversion attack is designed to run on MNIST dataset to steal available information from participating clients
+
+'''
 import random
 
 import torch
@@ -9,12 +13,9 @@ import torchvision.transforms as transforms
 from matplotlib import pyplot as plt
 from torch.utils.data.dataset import Subset
 
-
 from aijack.attack import Generator_Attack
 from aijack.collaborative import SplitNN, SplitNNClient
 
-
-#Reference https://github.com/Koukyosyumei/AIJack
 
 class FirstNet(nn.Module):
     def __init__(self):

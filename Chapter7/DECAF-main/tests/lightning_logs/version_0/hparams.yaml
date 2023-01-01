@@ -1,0 +1,41 @@
+input_dim: 10
+dag_seed:
+- - 1
+  - 2
+- - 1
+  - 3
+- - 1
+  - 4
+- - 2
+  - 5
+- - 2
+  - 0
+- - 3
+  - 0
+- - 3
+  - 6
+- - 3
+  - 7
+- - 6
+  - 9
+- - 0
+  - 8
+- - 0
+  - 9
+h_dim: 200
+lr: 0.0005
+b1: 0.5
+b2: 0.999
+batch_size: 64
+lambda_gp: 10
+lambda_privacy: 0
+d_updates: 10
+eps: 1.0e-08
+alpha: 2
+rho: 2
+weight_decay: 0.01
+grad_dag_loss: false
+l1_g: 0
+l1_W: 0.0001
+p_gen: -1
+use_mask: true

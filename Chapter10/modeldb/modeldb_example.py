@@ -1,3 +1,7 @@
+'''
+The purpose of this code example, is to learn how to track ML model experiments using modeldb
+'''
+
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import datasets, ensemble
@@ -20,7 +24,7 @@ expt = client.set_experiment("ModelDB Experiment")
 # log the first run
 run = client.set_experiment_run("First Run")
 dataset = client.set_dataset(name = "Diabetes Data")
-save_path = '/Users/shachatt1/Desktop/sharmi/books/My_book_responsible_ai/python_code/Chapter 7/modeldb_model_artifacts/'
+save_path = '.'  #define your own path where you want to save experiments 
 dataset_version = dataset.create_version(Path(save_path))
 run.log_dataset_version("v1", dataset_version)
 

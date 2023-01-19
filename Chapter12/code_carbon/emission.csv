@@ -1,0 +1,5 @@
+id,project_name,experiment_description,epoch,start_time,duration(s),power_consumption(kWh),CO2_emissions(kg),CPU_name,GPU_name,OS,region/country,cost
+55c92fa9-3961-4d88-9102-2f447c413665,mnist,Convolutional model,12,2023-01-19 13:03:58,279.0830628871918,0.0009768574069131,0.0006110956186149,"Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz/1 device(s), TDP:45.0", 0 device(s),MacOS,IN/Karnataka,
+935c05eb-e754-4f30-af39-6f0b1d04445b,mnist,simple model,12,2023-01-19 13:08:39,91.4394760131836,0.0002803980285472,0.0001754094359124,"Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz/1 device(s), TDP:45.0", 0 device(s),MacOS,IN/Karnataka,
+6d482a41-2ece-48ad-80c3-6e7384f0d506,mnist,simple model,12,2023-01-19 13:10:13,91.55869221687315,0.0002907153305126,0.0001818636614547,"Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz/1 device(s), TDP:45.0", 0 device(s),MacOS,IN/Karnataka,
+bc46a450-902e-42d6-ad6f-8414b3ee0754,"Mnist, testing decorators",simple model,10,2023-01-19 13:14:00,94.24296879768372,0.0003479939470949984,0.0002176956174660594,"Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz/1 device(s), TDP:45.0", 0 device(s),MacOS,IN/Karnataka,nan
